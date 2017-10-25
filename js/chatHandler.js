@@ -9,10 +9,8 @@ const config = {
 }
 class XmppStore {
   logged = false;
-  loading = false;
   loginError = null;
   error = null;
-  conversation = [];
 
   constructor() {
     XMPP.on('loginError', this.onLoginError);
@@ -29,6 +27,10 @@ class XmppStore {
   _getUserName(name){
     return name + '@' + this.settings.domain + "/" + this.settings.schema;
   }
+  fetchRoster() {
+    XMPP.fetchRoster()
+  }
+
 
   sendMessage(message,receiver){
     /*if (!this.remote || !this.remote.trim()){
@@ -59,10 +61,10 @@ class XmppStore {
     //this.conversation.unshift({own:false, text:body});
   }
 
-  onLoginError(){
-    this.loading = false;
-    this.conversation.replace([]);
-    this.loginError = "Cannot authenticate, please use correct local username";
+  onLoginError(text){
+    //this.loading = false;
+    //this.conversation.replace([]);
+    store.dispatch({type:'LOGIN_FAILED',payload: text})
   }
 
   onError(message){
@@ -101,4 +103,4 @@ class XmppStore {
 
 }
 
-export default XmppStore;
+export default new XmppStore();

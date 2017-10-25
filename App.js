@@ -12,24 +12,59 @@ import {
   View,
   Button
 } from 'react-native';
+import {StackNavigator, TabNavigator} from 'react-navigation'
 
 import {Provider} from 'react-redux'
+import Login from './js/components/login'
+import JobListView from './js/components/jobListView'
 import store from './js/store'
-import XmppStore from './js/chatHandler'
-let xmpp = new XmppStore()
-//var XMPP = require('react-native-xmpp');
+import xmpp from './js/chatHandler'
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+
+import { GiftedChat } from 'react-native-gifted-chat';
+
+const Main = StackNavigator({
+  Login: {
+    screen: Login
+  },
+  JobList: {
+    screen: JobListView
+  }
+  // DeckView: {
+  //   screen: DeckView
+  // },
+  // AddQuestion: {
+  //   screen: AddQuestionView
+  // },
+  // Quiz: {
+  //   screen: Quiz
+  // }
+})
 
 export default class App extends Component<{}> {
+  /*state = {
+    messages: [
+      {
+        _id: 1,
+        text: 'Hello developer',
+        createdAt: new Date(),
+        user: {
+          _id: 2,
+          name: 'React Native',
+          avatar: 'https://facebook.github.io/react/img/logo_og.png',
+        },
+      },
+    ],
+  }
+  onSend(messages = []) {
+    this.setState((previousState) => ({
+      messages: GiftedChat.append(previousState.messages, messages),
+    }));
+  }
+
   componentDidMount() {
     console.log(xmpp)
-    /*XMPP.connect('faysal@sendjob','qweqwe',0,'localhost',5222)
+    /!*XMPP.connect('faysal@sendjob','qweqwe',0,'localhost',5222)
 
     XMPP.on('login', function () {
       console.log('jdjfslkad')
@@ -37,31 +72,27 @@ export default class App extends Component<{}> {
 
     XMPP.on('message',function (obj) {
       console.log('mssage paisi', obj)
-    })*/
+    })*!/
 
     xmpp.login('faysal','qweqwe')
 
-  }
+  }*/
 
   componentWillUnmount() {
     //XMPP.removeListeners();
     //XMPP.removeListener('message');
   }
 
-  onClick() {
-    xmpp.sendMessage('from app', 'zibon@sendjob')
+  /*onClick() {
+    //xmpp.sendMessage('from app', 'zibon@sendjob')
+    xmpp.fetchRoster()
     console.log('.**..')
-  }
+  }*/
   render() {
     return (
       <Provider store={store}>
-        <View style={styles.container} xmpp={xmpp}>
-          <Button
-            onPress={() => this.onClick()}
-            title="Learn More"
-            color="#841584"
-            accessibilityLabel="Learn more about this purple button"
-          />
+        <View style={styles.container} >
+          <Main screenProps={{xmpp:xmpp}}/>
         </View>
       </Provider>
 
@@ -72,8 +103,6 @@ export default class App extends Component<{}> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
   welcome: {
