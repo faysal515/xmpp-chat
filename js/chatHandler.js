@@ -5,19 +5,20 @@ const config = {
   host: 'localhost',
   port: 5222,
   schema: 'mobile',
-  authType: 0 // plain auth 1-> scram 2-> md5digest
+  authType: 0 // 0 -> plain auth, 1-> scram, 2-> md5digest
 }
 class XmppStore {
   logged = false;
   loginError = null;
-  error = null;
+  xmppObject = XMPP
+  //error = null;
 
   constructor() {
-    XMPP.on('loginError', this.onLoginError);
-    XMPP.on('error', this.onError);
-    XMPP.on('disconnect', this.onDisconnect);
-    XMPP.on('login', this.onLogin);
-    XMPP.on('message', this.onReceiveMessage);
+    this.xmppObject.on('loginError', this.onLoginError);
+    this.xmppObject.on('error', this.onError);
+    this.xmppObject.on('disconnect', this.onDisconnect);
+    this.xmppObject.on('login', this.onLogin);
+    this.xmppObject.on('message', this.onReceiveMessage);
     this.settings = {...config}
     // default values
     //this.local = 'rntestuser1';
@@ -28,31 +29,21 @@ class XmppStore {
     return name + '@' + this.settings.domain + "/" + this.settings.schema;
   }
   fetchRoster() {
-    XMPP.fetchRoster()
+    return this.xmppObject.fetchRoster()
   }
 
 
   sendMessage(message,receiver){
-    /*if (!this.remote || !this.remote.trim()){
-      console.error("No remote username is defined");
-    }
-    if (!message || !message.trim()){
-      return false;
-    }
-    // add to list of messages
-    this.conversation.unshift({own:true, text:message.trim()});
-    // empty sent message
-    this.error = null;
-    // send to XMPP server
-    XMPP.message(message.trim(), this._userForName(this.remote))*/
 
-    XMPP.message(message.trim(),receiver)
+    let x = this.xmppObject.message(message.trim(),receiver)
+    console.log('... ', x)
   }
 
   onReceiveMessage(data){
+
     console.log("pre recv")
     let {from,body} = data
-    // extract username from XMPP UID
+    // extract username from this.xmppObject UID
     if (!from || !body){
       return;
     }
@@ -68,7 +59,7 @@ class XmppStore {
   }
 
   onError(message){
-    this.error = message;
+    console.log('LINE 58')
   }
 
   onDisconnect(message){
@@ -93,14 +84,14 @@ class XmppStore {
     * VALIDATION
     * */
     //console.log('TRY ', username,password,settings)
-    XMPP.connect(this._getUserName(user),password,settings.authType,settings.host,settings.port)
+    this.xmppObject.connect(this._getUserName(user),password,settings.authType,settings.host,settings.port)
 
   }
 
   disconnect() {
-    XMPP.disconnect();
+    this.xmppObject.disconnect();
   }
 
 }
 
-export default new XmppStore();
+export default XmppStore;

@@ -1,87 +1,40 @@
 import React, {Component} from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
+  FlatList,
   View,
-  Image,
-  Dimensions,
-  TextInput,
-  Button,
-  TouchableOpacity,
-  FlatList
+  Text,
+  Alert
 } from 'react-native';
 import {connect} from 'react-redux'
+import Job from './job'
 import axios from 'axios'
 
 
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 60,
-  },
-  itemContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
-    borderTopWidth: 0.5,
-    borderBottomWidth: 0.5,
-    borderColor: '#4488A7',
-  },
-  text: {
-    color: '#132d3d',
-  }
-})
-
-class Job extends React.PureComponent {
-  onPress() {
-    console.log('hello ', this.props)
-    let jobCreator = this.props.job.createdBy.objectId
-    console.log('JOB CREATOR ', jobCreator)
-    axios.get(`http://api.sendjobs.co:1337/parse/classes/_User/${jobCreator}`,{
-      headers: {
-        'X-Parse-Application-Id': '1'
-      }
-      // params: {
-      //   'where': {
-      //     'objectId': jobCreator
-      //   }
-      // }
-    }).then(user => {
-      console.log('USER FOUND ', user.data)
-      this.props.xmpp.sendMessage('Hi, I applied for this job!!', `${user.data.username}@sendjob`)
-    })
-      .catch(err => {console.log('user fetch err ', err)})
+class JobListView extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      selected: (new Map(): Map<string, boolean>),
+      jobs: []
+    };
+    this.props.screenProps.xmpp.xmppObject.on('error', this.showAlert.bind(this))
 
   }
 
-  render() {
-    return (
-
-        <View style={styles.itemContainer}>
-          <Text style={styles.text}>{this.props.job.title}</Text>
-          <Button
-            title="Apply"
-            color="#841584"
-            accessibilityLabel="Learn more about this purple button"
-            onPress={() => this.onPress()}
-          />
-        </View>
-
+  showAlert(e) {
+    Alert.alert(
+      'Could not send message',
+      '',
+      [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ]
     )
   }
-}
-
-class JobListView extends Component {
-  state = {
-    selected: (new Map(): Map<string, boolean>),
-    jobs: []
-  };
 
   componentDidMount() {
     //console.log('>> ',this.props)
-    axios.get(`http://api.sendjobs.co:1337/parse/classes/job`,{
+    axios.get(`http://api.sendjobs.co:1337/parse/classes/job`, {
       headers: {
         'X-Parse-Application-Id': '1'
       }
@@ -110,7 +63,8 @@ class JobListView extends Component {
   }
 
   _keyExtractor = (item, index) => item.objectId;
-  _onPressItem(id: string)  {
+
+  _onPressItem(id: string) {
     // updater functions are preferred for transactional updates
     this.setState((state) => {
       // copy the map rather than modifying state.
@@ -126,7 +80,7 @@ class JobListView extends Component {
     <Job
       id={item.objectId}
       job={item}
-      xmpp={this.props.screenProps.xmpp}
+      {...this.props}
       onPressItem={this._onPressItem}
       selected={!!this.state.selected.get(item.id)}
       title={item.title}

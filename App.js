@@ -17,11 +17,10 @@ import {StackNavigator, TabNavigator} from 'react-navigation'
 import {Provider} from 'react-redux'
 import Login from './js/components/login'
 import JobListView from './js/components/jobListView'
+import Messenger from './js/components/messenger'
 import store from './js/store'
 import xmpp from './js/chatHandler'
 
-
-import { GiftedChat } from 'react-native-gifted-chat';
 
 const Main = StackNavigator({
   Login: {
@@ -29,10 +28,10 @@ const Main = StackNavigator({
   },
   JobList: {
     screen: JobListView
-  }
-  // DeckView: {
-  //   screen: DeckView
-  // },
+  },
+  Messenger: {
+    screen: Messenger
+  },
   // AddQuestion: {
   //   screen: AddQuestionView
   // },
@@ -92,7 +91,7 @@ export default class App extends Component<{}> {
     return (
       <Provider store={store}>
         <View style={styles.container} >
-          <Main screenProps={{xmpp:xmpp}}/>
+          <Main screenProps={{xmpp:new xmpp()}}/>
         </View>
       </Provider>
 
