@@ -3,8 +3,7 @@ import {
   View,
   Text
 } from 'react-native'
-import { GiftedChat } from 'react-native-gifted-chat';
-
+import {GiftedChat, SystemMessage} from 'react-native-gifted-chat';
 
 
 export default class Messenger extends Component {
@@ -15,55 +14,85 @@ export default class Messenger extends Component {
     this.state = {
       messages: [],
     };
+
+    this.renderSystemMessage = this.renderSystemMessage.bind(this);
   }
+
   componentDidMount() {
-    this.props.screenProps.xmpp.xmppObject.on('message',this.onReceiveMessage.bind(this))
+    this.props.screenProps.xmpp.xmppObject.on('message', this.onReceiveMessage.bind(this))
   }
 
   onReceiveMessage(text) {
-    console.log('>>>> ', text)
-    if(!text.body)
+    if (!text.body)
       return
-    this.setState((previousState) => ({
-      messages: GiftedChat.append(previousState.messages, [{
-        _id: text.id,
-        text: text.body,
-        createdAt: new Date(),
-        user:{
-          _id: 2, //@todo userId should extracted from the `text.from` property
-          name: 'something',
-          avatar: 'https://facebook.github.io/react/img/logo_og.png',
-        }
-      }]),
-    }));
+
+    if (text.body === 'qqq') {
+      this.setState((previousState) => ({
+        messages: GiftedChat.append(previousState.messages, [{
+          _id: text.id,
+          text: text.body,
+          system: true,
+          createdAt: new Date(),
+        }]),
+      }));
+    } else {
+      this.setState((previousState) => ({
+        messages: GiftedChat.append(previousState.messages, [{
+          _id: text.id,
+          text: text.body,
+          createdAt: new Date(),
+          user: {
+            _id: 2, //@todo userId should extracted from the `text.from` property
+            name: 'something'
+          }
+        }]),
+      }));
+    }
+
+
+  }
+
+  renderSystemMessage(props) {
+    return (
+      <SystemMessage
+        {...props}
+        containerStyle={{
+          marginBottom: 15,
+        }}
+        textStyle={{
+          fontSize: 15,
+          color: 'white',
+          backgroundColor: 'orange'
+        }}
+      />
+    );
   }
 
   componentWillMount() {
-    // this.setState({
-    //   messages: [
-    //     {
-    //       _id: 1,
-    //       text: 'Hello developer',
-    //       createdAt: new Date(),
-    //       user: {
-    //         _id: 2,
-    //         name: 'React Native',
-    //         avatar: 'https://facebook.github.io/react/img/logo_og.png',
-    //       },
-    //     },
-    //   ],
-    // });
+    this.setState({
+      messages: [
+        {
+          _id: Math.round(Math.random() * 1000000),
+          text: "I'm a special message :-D",
+          createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
+          system: true,
+        },
+      ],
+    });
+
+
   }
 
   onSend(messages = []) {
     console.log('>> ', this.props)
     let {xmpp} = this.props.screenProps
     let {params} = this.props.navigation.state
-    xmpp.sendMessage(messages[0].text,`${params.user.username}@sendjob`)
+    xmpp.sendMessage(messages[0].text, `${params.user.username}@sendjob`)
     this.setState((previousState) => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }));
   }
+
   render() {
     return (
       <GiftedChat
@@ -72,6 +101,7 @@ export default class Messenger extends Component {
         user={{
           _id: 1,
         }}
+        renderSystemMessage={this.renderSystemMessage}
       />
     )
   }
