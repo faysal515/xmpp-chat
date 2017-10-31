@@ -5,7 +5,7 @@ import {
   StyleSheet
 } from 'react-native'
 import {connect} from 'react-redux'
-import {GiftedChat, SystemMessage} from 'react-native-gifted-chat';
+import {GiftedChat, SystemMessage} from 'react-native-gifted-chat'
 
 
 class Messenger extends Component {
@@ -37,30 +37,6 @@ class Messenger extends Component {
       }
     })
 
-    // if (text.body === 'qqq') {
-    //   this.setState((previousState) => ({
-    //     messages: GiftedChat.append(previousState.messages, [{
-    //       _id: text.id,
-    //       text: text.body,
-    //       system: true,
-    //       createdAt: new Date(),
-    //     }]),
-    //   }));
-    // } else {
-    //   this.setState((previousState) => ({
-    //     messages: GiftedChat.append(previousState.messages, [{
-    //       _id: text.id,
-    //       text: text.body,
-    //       createdAt: new Date(),
-    //       user: {
-    //         _id: 2, //@todo userId should extracted from the `text.from` property
-    //         name: 'something'
-    //       }
-    //     }]),
-    //   }));
-    // }
-
-
   }
 
   renderSystemMessage(props) {
@@ -71,9 +47,8 @@ class Messenger extends Component {
           marginBottom: 15,
         }}
         textStyle={{
-          fontSize: 15,
-          color: 'white',
-          backgroundColor: 'orange'
+          fontSize: 25,
+          // textDecorationLine: 'underline'
         }}
       />
     );
@@ -100,9 +75,9 @@ class Messenger extends Component {
     let {params} = this.props.navigation.state
     xmpp.sendMessage(messages[0].text, `${params.user.username}@sendjob`)
     this.props.sendMessage(messages[0])
-    this.setState((previousState) => ({
-      messages: GiftedChat.append(previousState.messages, messages),
-    }));
+    // this.setState((previousState) => ({
+    //   messages: GiftedChat.append(previousState.messages, messages),
+    // }));
   }
 
   onPressPhoneNumber() {
@@ -119,28 +94,36 @@ class Messenger extends Component {
         }}
         renderSystemMessage={this.renderSystemMessage}
         parsePatterns={(linkStyle) => [
-          { type: 'url', style: {...linkStyle}, onPress: this.onPressPhoneNumber },
-          ]}
+          {type: 'url', style: {...linkStyle}, onPress: this.onPressPhoneNumber},
+        ]}
+        systemMessageParsePatterns={
+          (currentMessage) => [
+            {
+              pattern: /[a-zA-Z0-9]+ applied for the job/,
+              style: {backgroundColor: 'black', color: 'yellow'},
+              onPress: (x) => console.log('QQQ ', x, this.props,currentMessage) // url opener function here
+            },
+          ]
+        }
       />
     )
   }
 }
 
 
-const mapStateToProps = (store,ownProps) => {
+const mapStateToProps = (store, ownProps) => {
   return {
     chat: store.chat
   }
 }
 
-const mapDisPatchToProps = (dispatch,ownProps) => {
+const mapDisPatchToProps = (dispatch, ownProps) => {
   return {
-    sendMessage : (msg) => dispatch({type: 'MESSAGE_SENT', payload: msg})
+    sendMessage: (msg) => dispatch({type: 'MESSAGE_SENT', payload: msg})
   }
 }
 
-export default connect(mapStateToProps,mapDisPatchToProps)(Messenger)
-
+export default connect(mapStateToProps, mapDisPatchToProps)(Messenger)
 
 
 const styles = StyleSheet.create({

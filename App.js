@@ -12,6 +12,7 @@ import {
   View,
   Button
 } from 'react-native';
+import * as test from '@faysal/gifted-xmpp'
 import {StackNavigator, TabNavigator} from 'react-navigation'
 
 import {Provider} from 'react-redux'
@@ -88,6 +89,7 @@ export default class App extends Component<{}> {
     console.log('.**..')
   }*/
   render() {
+    console.log('GIFTED ', test.name)
     return (
       <Provider store={store}>
         <View style={styles.container} >

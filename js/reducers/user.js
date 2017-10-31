@@ -1,6 +1,14 @@
 const defaultState = {
   user: null,
-  messages: []
+  messages: [
+    {
+      _id: Math.round(Math.random() * 1000000),
+      text: "someone applied for the job",
+      link: 'http://google.com',
+      createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
+      system: true,
+    },
+  ]
 }
 
 const chat = (state = defaultState, action) => {
@@ -17,7 +25,7 @@ const chat = (state = defaultState, action) => {
       }
 
     case 'MESSAGE_SENT':
-      return {...state,messages:[...state.messages,action.payload]}
+      return {...state, messages: [...state.messages, action.payload]}
     default:
       return state;
   }
