@@ -19,7 +19,12 @@ class JobListView extends Component {
       jobs: []
     };
     this.props.screenProps.xmpp.xmppObject.on('error', this.showAlert.bind(this))
+    this.props.screenProps.xmpp.xmppObject.on('roster', this.onRoster.bind(this))
 
+  }
+
+  onRoster(data) {
+    console.log('ROSTER ', data )
   }
 
   showAlert(e) {
@@ -59,6 +64,9 @@ class JobListView extends Component {
       .catch((error) => {
         console.log('... ',error);
       });*/
+    console.log('pure ', this.props.screenProps.xmpp.xmppObject)
+
+    this.props.screenProps.xmpp.xmppObject.fetchRoster()
 
   }
 
@@ -98,7 +106,9 @@ class JobListView extends Component {
           keyExtractor={this._keyExtractor}
           renderItem={this._renderItem}
         />
+        <Text>{`End here ...`.toUpperCase()}</Text>
       </View>
+
     )
   }
 }

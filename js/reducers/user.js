@@ -1,4 +1,9 @@
-const chat = (state = {}, action) => {
+const defaultState = {
+  user: null,
+  messages: []
+}
+
+const chat = (state = defaultState, action) => {
   switch (action.type) {
     case 'LOGIN_SUCCESS':
       return {
@@ -10,6 +15,9 @@ const chat = (state = {}, action) => {
         ...state,
         user: null
       }
+
+    case 'MESSAGE_SENT':
+      return {...state,messages:[...state.messages,action.payload]}
     default:
       return state;
   }

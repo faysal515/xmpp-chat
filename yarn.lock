@@ -3769,9 +3769,9 @@ react-native-drawer-layout@1.3.2:
   dependencies:
     react-native-dismiss-keyboard "1.0.0"
 
-"react-native-gifted-chat@https://github.com/FaridSafi/react-native-gifted-chat.git":
-  version "0.2.9"
-  resolved "https://github.com/FaridSafi/react-native-gifted-chat.git#dda1f9db5c962efb458518a9c8a2803aa37bd959"
+react-native-gifted-chat@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-gifted-chat/-/react-native-gifted-chat-0.3.0.tgz#ab371723e3ddad07385d0ff1dbfcae156151daad"
   dependencies:
     "@expo/react-native-action-sheet" "^1.0.1"
     md5 "2.2.1"

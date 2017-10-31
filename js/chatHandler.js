@@ -20,9 +20,6 @@ class XmppStore {
     this.xmppObject.on('login', this.onLogin);
     this.xmppObject.on('message', this.onReceiveMessage);
     this.settings = {...config}
-    // default values
-    //this.local = 'rntestuser1';
-    //this.remote = 'rntestuser2';
   }
 
   _getUserName(name){

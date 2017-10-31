@@ -36,7 +36,8 @@ class Login extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.chat.user) {
+
+    if(this.props.chat.user !== nextProps.chat.user) {
       console.log('changing screen route')
       this.props.navigation.navigate('JobList',{name:'job list'})
     }
