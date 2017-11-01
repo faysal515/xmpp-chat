@@ -2,9 +2,12 @@ import React, {Component} from 'react'
 import {
   View,
   Text,
-  StyleSheet
+  StyleSheet,
 } from 'react-native'
 import {connect} from 'react-redux'
+import uuidv4 from 'uuid/v4'
+
+
 import {GiftedChat, SystemMessage} from 'react-native-gifted-chat'
 
 
@@ -22,18 +25,20 @@ class Messenger extends Component {
 
   componentDidMount() {
     this.props.screenProps.xmpp.xmppObject.on('message', this.onReceiveMessage.bind(this))
+    this.props.screenProps.xmpp.xmppObject.on('iq', iq => console.log('iq man ', iq))
+    //this.props.screenProps.xmpp.xmppObject.addToRoster('')
   }
 
   onReceiveMessage(text) {
     if (!text.body)
       return
 
-    this.props.sendMessage({
-      _id: text.id,
+    this.props.receiveMessage({
+      _id: uuidv4(),
       text: text.body,
       createdAt: new Date(),
       user: {
-        _id: text.from
+        _id: text.from.split('@')[0]
       }
     })
 
@@ -54,30 +59,13 @@ class Messenger extends Component {
     );
   }
 
-  componentWillMount() {
-    // this.setState({
-    //   messages: [
-    //     {
-    //       _id: Math.round(Math.random() * 1000000),
-    //       text: "http://google.com",
-    //       createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
-    //       system: true,
-    //     },
-    //   ],
-    // });
-
-
-  }
-
   onSend(messages = []) {
-    console.log('>> ', this.props)
+    console.log('>> ', messages[0])
     let {xmpp} = this.props.screenProps
     let {params} = this.props.navigation.state
     xmpp.sendMessage(messages[0].text, `${params.user.username}@sendjob`)
+    messages[0].recipient = params.user.username
     this.props.sendMessage(messages[0])
-    // this.setState((previousState) => ({
-    //   messages: GiftedChat.append(previousState.messages, messages),
-    // }));
   }
 
   onPressPhoneNumber() {
@@ -85,12 +73,16 @@ class Messenger extends Component {
   }
 
   render() {
+    //console.log('ping', this.props.navigation)
+    let {chat} = this.props
+    let chattingWith = this.props.navigation.state.params.user.username,
+      key = `${chat.user}:${chattingWith}`
     return (
       <GiftedChat
-        messages={this.props.chat.messages}
+        messages={this.props.chat.messages[key] || []}
         onSend={(messages) => this.onSend(messages)}
         user={{
-          _id: 1,
+          _id: `faysal@sendjob`,
         }}
         renderSystemMessage={this.renderSystemMessage}
         parsePatterns={(linkStyle) => [
@@ -119,7 +111,8 @@ const mapStateToProps = (store, ownProps) => {
 
 const mapDisPatchToProps = (dispatch, ownProps) => {
   return {
-    sendMessage: (msg) => dispatch({type: 'MESSAGE_SENT', payload: msg})
+    sendMessage: (msg) => dispatch({type: 'MESSAGE_SENT', payload: msg}),
+    receiveMessage: (msg) => dispatch({type: 'MESSAGE_RECEIVED', payload: msg})
   }
 }
 

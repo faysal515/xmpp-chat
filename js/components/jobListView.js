@@ -10,7 +10,6 @@ import Job from './job'
 import axios from 'axios'
 
 
-
 class JobListView extends Component {
   constructor(props) {
     super(props)
@@ -24,7 +23,7 @@ class JobListView extends Component {
   }
 
   onRoster(data) {
-    console.log('ROSTER ', data )
+    console.log('ROSTER ', data)
   }
 
   showAlert(e) {
@@ -106,7 +105,6 @@ class JobListView extends Component {
           keyExtractor={this._keyExtractor}
           renderItem={this._renderItem}
         />
-        <Text>{`End here ...`.toUpperCase()}</Text>
       </View>
 
     )

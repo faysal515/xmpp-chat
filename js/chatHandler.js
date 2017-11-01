@@ -31,9 +31,7 @@ class XmppStore {
 
 
   sendMessage(message,receiver){
-
-    let x = this.xmppObject.message(message.trim(),receiver)
-    console.log('... ', x)
+    this.xmppObject.message(message.trim(),receiver)
   }
 
   onReceiveMessage(data){
