@@ -12,7 +12,7 @@ import {
   View,
   Button
 } from 'react-native';
-import * as test from '@faysal/gifted-xmpp'
+//import * as test from '@faysal/gifted-xmpp'
 import {StackNavigator, TabNavigator} from 'react-navigation'
 
 import {Provider} from 'react-redux'
@@ -22,7 +22,13 @@ import Messenger from './js/components/messenger'
 import store from './js/store'
 import xmpp from './js/chatHandler'
 
-
+const config = {
+  domain : 'sendjob',
+  host: 'localhost',
+  port: 5222,
+  schema: 'mobile',
+  authType: 0 // 0 -> plain auth, 1-> scram, 2-> md5digest
+}
 const Main = StackNavigator({
   Login: {
     screen: Login
@@ -33,67 +39,25 @@ const Main = StackNavigator({
   Messenger: {
     screen: Messenger
   },
-  // AddQuestion: {
-  //   screen: AddQuestionView
-  // },
-  // Quiz: {
-  //   screen: Quiz
-  // }
 })
 
 export default class App extends Component<{}> {
-  /*state = {
-    messages: [
-      {
-        _id: 1,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://facebook.github.io/react/img/logo_og.png',
-        },
-      },
-    ],
-  }
-  onSend(messages = []) {
-    this.setState((previousState) => ({
-      messages: GiftedChat.append(previousState.messages, messages),
-    }));
-  }
-
+  xmpp = null
   componentDidMount() {
-    console.log(xmpp)
-    /!*XMPP.connect('faysal@sendjob','qweqwe',0,'localhost',5222)
-
-    XMPP.on('login', function () {
-      console.log('jdjfslkad')
-    });
-
-    XMPP.on('message',function (obj) {
-      console.log('mssage paisi', obj)
-    })*!/
-
-    xmpp.login('faysal','qweqwe')
-
-  }*/
+    this.xmpp = new xmpp(config)
+  }
 
   componentWillUnmount() {
     //XMPP.removeListeners();
     //XMPP.removeListener('message');
   }
 
-  /*onClick() {
-    //xmpp.sendMessage('from app', 'zibon@sendjob')
-    xmpp.fetchRoster()
-    console.log('.**..')
-  }*/
   render() {
-    console.log('GIFTED ', test.name)
+
     return (
       <Provider store={store}>
         <View style={styles.container} >
-          <Main screenProps={{xmpp:new xmpp()}}/>
+          <Main screenProps={{xmpp:new xmpp(config)}}/>
         </View>
       </Provider>
 

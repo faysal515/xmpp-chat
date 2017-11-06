@@ -21,11 +21,19 @@ class Login extends Component {
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    props.screenProps.xmpp.xmppObject.on('login',this.onLogin.bind(this))
 
   }
 
+  onLogin(user){
+    this.props.login(user)
+  }
+
   componentDidMount() {
-    this.props.screenProps.xmpp.login('faysal', 'qweqwe')
+    this.props.screenProps.xmpp.login(
+      '39a9b4b9-665f-4d9f-8bdf-3c231a093629', //jid // zibon
+      'ff2434d2-919c-4ad1-b0ea-ced812961498' // password
+    )
   }
 
 
@@ -146,4 +154,10 @@ const mapStateToProps = (store,ownProps) => {
   }
 }
 
-export default connect(mapStateToProps)(Login)
+const mapDispatchToProps= (dispatch,ownProps) => {
+  return {
+    login: (user) => dispatch({type:'LOGIN_SUCCESS',payload: user.username})
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

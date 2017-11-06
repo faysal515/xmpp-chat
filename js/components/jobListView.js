@@ -18,13 +18,9 @@ class JobListView extends Component {
       jobs: []
     };
     this.props.screenProps.xmpp.xmppObject.on('error', this.showAlert.bind(this))
-    this.props.screenProps.xmpp.xmppObject.on('roster', this.onRoster.bind(this))
 
   }
 
-  onRoster(data) {
-    console.log('ROSTER ', data)
-  }
 
   showAlert(e) {
     Alert.alert(
@@ -38,9 +34,9 @@ class JobListView extends Component {
 
   componentDidMount() {
     //console.log('>> ',this.props)
-    axios.get(`http://api.sendjobs.co:1337/parse/classes/job`, {
+    axios.get(`http://localhost:1337/parse/classes/job`, {
       headers: {
-        'X-Parse-Application-Id': '1'
+        'X-Parse-Application-Id': 'sendjob'
       }
     }).then(res => {
       console.log('data fetch ', res.data)
@@ -63,9 +59,7 @@ class JobListView extends Component {
       .catch((error) => {
         console.log('... ',error);
       });*/
-    console.log('pure ', this.props.screenProps.xmpp.xmppObject)
 
-    this.props.screenProps.xmpp.xmppObject.fetchRoster()
 
   }
 

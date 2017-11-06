@@ -1,5 +1,6 @@
 const defaultState = {
   user: null,
+  jid: null,
   messages: {}
   // {
   //   _id: Math.round(Math.random() * 1000000),
@@ -17,7 +18,8 @@ const chat = (state = defaultState, action) => {
     case 'LOGIN_SUCCESS':
       return {
         ...state,
-        user: action.payload
+        user: action.payload,
+        jid: action.payload.split('@')[0]
       };
     case 'LOGIN_REJECTED':
       return {
@@ -26,7 +28,7 @@ const chat = (state = defaultState, action) => {
       }
 
     case 'MESSAGE_SENT':
-      key = `${state.user}:${action.payload.recipient}`
+      key = `${state.jid}:${action.payload.recipient}`
       root = {...state.messages}
       list = Array.isArray(root[key]) ? [...root[key]] : []
 
@@ -36,7 +38,7 @@ const chat = (state = defaultState, action) => {
 
 
     case 'MESSAGE_RECEIVED':
-      key = `${state.user}:${action.payload.user._id}`
+      key = `${state.jid}:${action.payload.user._id}`
       root = {...state.messages}
       list = Array.isArray(root[key]) ? [...root[key]] : []
 
@@ -52,7 +54,7 @@ export default chat;
 
 /*
 * DATA STRUCTURE FOR MESSAGE CACHES
-* <key>user1:user2
+* <key>user1:user2 <<< jid
 * <value>message array(m)
 *
 * m: [object array(o)]

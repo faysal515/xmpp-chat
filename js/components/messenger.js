@@ -7,9 +7,8 @@ import {
 import {connect} from 'react-redux'
 import uuidv4 from 'uuid/v4'
 
-
-import {GiftedChat, SystemMessage} from 'react-native-gifted-chat'
-
+import {SystemMessage} from 'react-native-gifted-chat'
+import XMPPMessenger from '../../packages/gifted-xmpp'
 
 class Messenger extends Component {
 
@@ -21,12 +20,7 @@ class Messenger extends Component {
     };
 
     this.renderSystemMessage = this.renderSystemMessage.bind(this);
-  }
-
-  componentDidMount() {
-    this.props.screenProps.xmpp.xmppObject.on('message', this.onReceiveMessage.bind(this))
-    this.props.screenProps.xmpp.xmppObject.on('iq', iq => console.log('iq man ', iq))
-    //this.props.screenProps.xmpp.xmppObject.addToRoster('')
+    this.onSend = this.onSend.bind(this)
   }
 
   onReceiveMessage(text) {
@@ -44,6 +38,12 @@ class Messenger extends Component {
 
   }
 
+  onSend(msg) {
+    let {params} = this.props.navigation.state
+    msg.recipient = params.user.publicKey
+    this.props.sendMessage(msg)
+  }
+
   renderSystemMessage(props) {
     return (
       <SystemMessage
@@ -59,30 +59,22 @@ class Messenger extends Component {
     );
   }
 
-  onSend(messages = []) {
-    console.log('>> ', messages[0])
-    let {xmpp} = this.props.screenProps
-    let {params} = this.props.navigation.state
-    xmpp.sendMessage(messages[0].text, `${params.user.username}@sendjob`)
-    messages[0].recipient = params.user.username
-    this.props.sendMessage(messages[0])
-  }
+
 
   onPressPhoneNumber() {
     console.log('click ulr')
   }
 
   render() {
-    //console.log('ping', this.props.navigation)
-    let {chat} = this.props
-    let chattingWith = this.props.navigation.state.params.user.username,
-      key = `${chat.user}:${chattingWith}`
     return (
-      <GiftedChat
-        messages={this.props.chat.messages[key] || []}
-        onSend={(messages) => this.onSend(messages)}
+      <XMPPMessenger
+        xmpp={this.props.screenProps.xmpp}
+        chat={this.props.chat}
+        chattingWith={this.props.navigation.state.params.user.publicKey}
+        onSend={this.onSend}
+        onReceiveMessage={this.onReceiveMessage.bind(this)}
         user={{
-          _id: `faysal@sendjob`,
+          _id: this.props.chat.jid
         }}
         renderSystemMessage={this.renderSystemMessage}
         parsePatterns={(linkStyle) => [

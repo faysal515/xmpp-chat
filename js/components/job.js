@@ -36,12 +36,12 @@ const styles = StyleSheet.create({
 export default class Job extends React.PureComponent {
   onPress() {
     let jobCreator = this.props.job.createdBy.objectId
-    axios.get(`http://api.sendjobs.co:1337/parse/classes/_User/${jobCreator}`, {
+    axios.get(`http://localhost:1337/parse/classes/_User/${jobCreator}`, {
       headers: {
-        'X-Parse-Application-Id': '1'
+        'X-Parse-Application-Id': 'sendjob'
       }
     }).then(user => {
-      console.log('USER FOUND ', user)
+      console.log('USER FOUND ', user.data)
       //this.props.screenProps.xmpp.sendMessage('Hi, I applied for this job!!', `${user.data.username}@sendjob`)
       this.props.navigation.navigate('Messenger',{title:'chatting with',user:user.data})
     })
