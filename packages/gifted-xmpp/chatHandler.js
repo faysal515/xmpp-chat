@@ -42,6 +42,10 @@ class XmppStore {
   //   console.log('disconnected')
   // }
 
+  sendMessage(text,to) {
+    this.xmppObject.message(text, to)
+  }
+
   login(user, password){
     const {settings} = this
 

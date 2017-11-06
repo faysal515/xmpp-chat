@@ -20,7 +20,7 @@ import Login from './js/components/login'
 import JobListView from './js/components/jobListView'
 import Messenger from './js/components/messenger'
 import store from './js/store'
-import xmpp from './js/chatHandler'
+import xmpp from './packages/gifted-xmpp/chatHandler'
 
 const config = {
   domain : 'sendjob',
