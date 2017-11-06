@@ -8,7 +8,7 @@ import {connect} from 'react-redux'
 import uuidv4 from 'uuid/v4'
 
 import {SystemMessage} from 'react-native-gifted-chat'
-import XMPPMessenger from '../../packages/gifted-xmpp'
+import XMPPMessenger from 'gifted-xmpp'
 
 class Messenger extends Component {
 
