@@ -34,9 +34,11 @@ class XMPPMessenger extends Component {
 
   render() {
     let {chat, chattingWith} = this.props,
-      key = `${chat.jid}:${chattingWith}`
+      key = `${chat.jid}:${chattingWith}`,
+      {user, parsePatterns,systemMessageParsePatterns, ...rest} = this.props
     return (
       <GiftedChat
+        {...rest}
         messages={chat.messages[key] || []}
         onSend={(messages) => this.onSend(messages)}
         user={this.props.user}
